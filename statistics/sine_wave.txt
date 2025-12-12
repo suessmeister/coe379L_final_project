@@ -1,0 +1,163 @@
+ST Edge AI Core v2.2.0-20266 2adc00962
+Created date          : 2025-12-12 15:12:41
+Parameters            : analyze --target stm32f7 --name network -m /Users/josephsuess/Downloads/sine_model.h5 --compression none --verbosity 1 --workspace /var/folders/b5/s7jrnl797p7fq9jmzwpyfds40000gn/T/mxAI_workspace143848721922529116495937354145999890 --output /Users/josephsuess/.stm32cubemx/network_output
+
+Exec/report summary (analyze)
+-----------------------------------------------------------------------------------------------------------------------------
+model file         :   /Users/josephsuess/Downloads/sine_model.h5                                                            
+type               :   keras                                                                                                 
+c_name             :   network                                                                                               
+compression        :   none                                                                                                  
+options            :   allocate-inputs, allocate-outputs                                                                     
+optimization       :   balanced                                                                                              
+target/series      :   stm32f7                                                                                               
+workspace dir      :   /var/folders/b5/s7jrnl797p7fq9jmzwpyfds40000gn/T/mxAI_workspace143848721922529116495937354145999890   
+output dir         :   /Users/josephsuess/.stm32cubemx/network_output                                                        
+model_fmt          :   float                                                                                                 
+model_name         :   sine_model                                                                                            
+model_hash         :   0xf29efdbc0723a33111c66a8f95f5fd63                                                                    
+params #           :   1,153 items (4.50 KiB)                                                                                
+-----------------------------------------------------------------------------------------------------------------------------
+input 1/1          :   'input_0', f32(1x1), 4 Bytes, activations                                                             
+output 1/1         :   'dense_5', f32(1x1), 4 Bytes, activations                                                             
+macc               :   1,793                                                                                                 
+weights (ro)       :   4,612 B (4.50 KiB) (1 segment)                                                                        
+activations (rw)   :   256 B (256 B) (1 segment) *                                                                           
+ram (total)        :   256 B (256 B) = 256 + 0 + 0                                                                           
+-----------------------------------------------------------------------------------------------------------------------------
+(*) 'input'/'output' buffers are allocated in the activations buffer
+
+Model name - sine_model
+------ ------------------------------- ------------ ------------- ------- --------------- --- --------------- --------------- ---------------------------- 
+m_id   layer (type,original)           oshape       param/size       macc    connected to   | c_size          c_macc          c_type                       
+------ ------------------------------- ------------ ------------- ------- --------------- --- --------------- --------------- ---------------------------- 
+0      input_0 (Input, None)           [b:1,c:1]                                            | +256(+100.0%)   +384(+100.0%)   Dense_/Nonlinearity_[0, 1]   
+       dense_3_dense (Dense, Dense)    [b:1,c:32]   64/256             64         input_0   | -256(-100.0%)   -64(-100.0%)    
+       dense_3 (Nonlinearity, Dense)   [b:1,c:32]                     320   dense_3_dense   |                 -320(-100.0%)   
+------ ------------------------------- ------------ ------------- ------- --------------- --- --------------- --------------- ---------------------------- 
+1      dense_4_dense (Dense, Dense)    [b:1,c:32]   1,056/4,224     1,056         dense_3   |                 +320(+30.3%)    Dense_/Nonlinearity_[2, 3]   
+       dense_4 (Nonlinearity, Dense)   [b:1,c:32]                     320   dense_4_dense   |                 -320(-100.0%)   
+------ ------------------------------- ------------ ------------- ------- --------------- --- --------------- --------------- ---------------------------- 
+2      dense_5 (Dense, Dense)          [b:1,c:1]    33/132             33         dense_4   |                                 Dense_[o][4]                 
+------ ------------------------------- ------------ ------------- ------- --------------- --- --------------- --------------- ---------------------------- 
+model/c-model: macc=1,793/1,793  weights=4,612/4,612  activations=--/256 io=--/0
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : sine_model
+c-name                : network
+c-node #              : 5
+c-array #             : 12
+activations size      : 256 (1 segment)
+weights size          : 4612 (1 segment)
+macc                  : 1793
+inputs                : ['input_0_output']
+outputs               : ['dense_5_output']
+
+C-Arrays (12)
+------ ----------------------- ----------- ------------------------- ------------- --------- 
+c_id   name (*_array)          item/size   domain/mem-pool           c-type        comment   
+------ ----------------------- ----------- ------------------------- ------------- --------- 
+0      dense_3_dense_bias      32/128      weights/weights           const float             
+1      dense_3_dense_output    32/128      activations/**default**   float                   
+2      dense_3_dense_weights   32/128      weights/weights           const float             
+3      dense_3_output          32/128      activations/**default**   float                   
+4      dense_4_dense_bias      32/128      weights/weights           const float             
+5      dense_4_dense_output    32/128      activations/**default**   float                   
+6      dense_4_dense_weights   1024/4096   weights/weights           const float             
+7      dense_4_output          32/128      activations/**default**   float                   
+8      dense_5_bias            1/4         weights/weights           const float             
+9      dense_5_output          1/4         activations/**default**   float         /output   
+10     dense_5_weights         32/128      weights/weights           const float             
+11     input_0_output          1/4         activations/**default**   float         /input    
+------ ----------------------- ----------- ------------------------- ------------- --------- 
+
+C-Layers (5)
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------ 
+c_id   name (*_layer)   id   layer_type      macc   rom    tensors                    shape (array id)   
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------ 
+0      dense_3_dense    0    Dense           64     256    I: input_0_output          f32(1x1) (11)      
+                                                           W: dense_3_dense_weights   f32(32x1) (2)      
+                                                           W: dense_3_dense_bias      f32(32) (0)        
+                                                           O: dense_3_dense_output    f32(1x32) (1)      
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------ 
+1      dense_3          0    Nonlinearity    320    0      I: dense_3_dense_output    f32(1x32) (1)      
+                                                           O: dense_3_output          f32(1x32) (3)      
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------ 
+2      dense_4_dense    1    Dense           1056   4224   I: dense_3_output          f32(1x32) (3)      
+                                                           W: dense_4_dense_weights   f32(32x32) (6)     
+                                                           W: dense_4_dense_bias      f32(32) (4)        
+                                                           O: dense_4_dense_output    f32(1x32) (5)      
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------ 
+3      dense_4          1    Nonlinearity    320    0      I: dense_4_dense_output    f32(1x32) (5)      
+                                                           O: dense_4_output          f32(1x32) (7)      
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------ 
+4      dense_5          2    Dense           33     132    I: dense_4_output          f32(1x32) (7)      
+                                                           W: dense_5_weights         f32(1x32) (10)     
+                                                           W: dense_5_bias            f32(1) (8)         
+                                                           O: dense_5_output          f32(1x1) (9)       
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------ 
+
+
+
+Number of operations per c-layer
+------- ------ ------------------------ ------- -------------- 
+c_id    m_id   name (type)                  #op           type 
+------- ------ ------------------------ ------- -------------- 
+0       0      dense_3_dense (Dense)         64   smul_f32_f32 
+1       0      dense_3 (Nonlinearity)       320     op_f32_f32 
+2       1      dense_4_dense (Dense)      1,056   smul_f32_f32 
+3       1      dense_4 (Nonlinearity)       320     op_f32_f32 
+4       2      dense_5 (Dense)               33   smul_f32_f32 
+------- ------ ------------------------ ------- -------------- 
+total                                     1,793 
+
+Number of operation types
+---------------- ------- ----------- 
+operation type         #           % 
+---------------- ------- ----------- 
+smul_f32_f32       1,153       64.3% 
+op_f32_f32           640       35.7% 
+
+Complexity report (model)
+------ --------------- ------------------------- ------------------------- -------- 
+m_id   name            c_macc                    c_rom                     c_id     
+------ --------------- ------------------------- ------------------------- -------- 
+0      input_0         |||||             21.4%   |                  5.6%   [0, 1]   
+1      dense_4_dense   ||||||||||||||||  76.7%   ||||||||||||||||  91.6%   [2, 3]   
+2      dense_5         |                  1.8%   |                  2.9%   [4]      
+------ --------------- ------------------------- ------------------------- -------- 
+macc=1,793 weights=4,612 act=256 ram_io=0
+ 
+ Requested memory size by section - "stm32f7" target
+ ------------------------------ ------- -------- ------- ----- 
+ module                            text   rodata    data   bss 
+ ------------------------------ ------- -------- ------- ----- 
+ NetworkRuntime1020_CM7_GCC.a     6,860        0       0     0 
+ network.o                          528       40   1,584   140 
+ network_data.o                      48       16      88     0 
+ lib (toolchain)*                   880       12       0     0 
+ ------------------------------ ------- -------- ------- ----- 
+ RT total**                       8,316       68   1,672   140 
+ ------------------------------ ------- -------- ------- ----- 
+ weights                              0    4,616       0     0 
+ activations                          0        0       0   256 
+ io                                   0        0       0     0 
+ ------------------------------ ------- -------- ------- ----- 
+ TOTAL                            8,316    4,684   1,672   396 
+ ------------------------------ ------- -------- ------- ----- 
+ *  toolchain objects (libm/libgcc*)
+ ** RT AI runtime objects (kernels+infrastructure)
+  
+  Summary - "stm32f7" target
+  ---------------------------------------------------
+               FLASH (ro)      %*   RAM (rw)       % 
+  ---------------------------------------------------
+  RT total         10,056   68.5%      1,812   87.6% 
+  ---------------------------------------------------
+  TOTAL            14,672              2,068         
+  ---------------------------------------------------
+  *  rt/total
+
